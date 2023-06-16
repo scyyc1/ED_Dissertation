@@ -1,4 +1,4 @@
-# Week 1: Linearly Seperate the Area of a Triangle
+E# Week 1: Linearly Seperate the Area of a Triangle
 **Target**: Find a line that bisector the area of a triangle
 
 ## Table of Contents
