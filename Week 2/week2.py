@@ -2,6 +2,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import random
 
+# Self-defined functions
+import sys
+import os
+
 def linear_interpolation(a, b, t):
     return (1-t)*a + t*b
 
@@ -23,11 +27,15 @@ class Triangle_Area_Bisection_2D:
             self.vertices = np.array([A, B, C])
         else:
             self.vertices = vertices
-        self.t = -1
+        self.t = []
         self.G = (vertices[0] + vertices[1] + vertices[2]) / 3
         self.p = p
-        self.P = np.zeros(2)
-        self.Q = np.zeros(2)
+        self.P = []
+        self.Q = []
+        # The thrid vertex of small triangle part
+        self.top = []
+        # The (unit) direction of the dicision boundary
+        self.d = []
         
     def ft(self, p1, p2, p3, p4, t):
         terms = self.compute_quadratic_coefficient(p1, p2, p3, p4)
@@ -44,37 +52,84 @@ class Triangle_Area_Bisection_2D:
     
     def compute_t(self, terms):
         delta = self.compute_quadratic_delta(terms)
-        print("delta: ", delta)
+#         print("delta: ", delta)
         t1 = (-terms[1]+pow(delta, 0.5)) / 2 / terms[0]
         t2 = (-terms[1]-pow(delta, 0.5)) / 2 / terms[0]
+        # print("t1: ", t1, "t2: ", t2)
         
-        if(t1 >= 1/2 and t1<= 1):
+        if(t1 >= 1/2 - 1e-6 and t1< 1 - 1e-6):
             return t1
-        if(t2 >= 1/2 and t2<= 1):
+        if(t2 >= 1/2 - 1e-6 and t2< 1 - 1e-6):
             return t2
         
-        print(t1, t2)
         return -1
     
     def solve_quadratic(self, p1, p2, p3):
         terms = self.compute_quadratic_coefficient(p1, p2, p3, self.p)
-        self.t = self.compute_t(terms)
+        t_temp = self.compute_t(terms)
+        self.t = self.t + [t_temp]
+        return t_temp
     
     def get_t(self):
-        if(self.ft(self.vertices[0], self.vertices[1], self.vertices[2], self.p, 0.5)*self.ft(self.vertices[0], self.vertices[1], self.vertices[2], self.p, 1) <= 0):
-            self.solve_quadratic(self.vertices[0], self.vertices[1], self.vertices[2])
-            self.P = linear_interpolation(self.vertices[0], self.vertices[1], self.t)
-            self.Q = linear_interpolation(self.vertices[0], self.vertices[2], 1/2/self.t)
+        if(self.ft(self.vertices[0], self.vertices[1], self.vertices[2], self.p, 0.5)*self.ft(self.vertices[0], self.vertices[1], self.vertices[2], self.p, 1) <= 1e-6):
+            t_temp = self.solve_quadratic(self.vertices[0], self.vertices[1], self.vertices[2])
+            P_temp = linear_interpolation(self.vertices[0], self.vertices[1], t_temp)
+            Q_temp = linear_interpolation(self.vertices[0], self.vertices[2], 1/2/t_temp)
+            d_temp = (P_temp - self.p) / np.linalg.norm(P_temp - self.p)
+            print("1", P_temp, " ", self.p, " ", d_temp, "t", t_temp)
+            self.P = self.P + [P_temp]
+            self.Q = self.Q + [Q_temp]
+            self.d = self.d + [d_temp]
+            self.top = self.top + [self.vertices[0]]
             
-        if(self.ft(self.vertices[1], self.vertices[2], self.vertices[0], self.p, 0.5)*self.ft(self.vertices[1], self.vertices[2], self.vertices[0], self.p, 1) <= 0):
-            self.solve_quadratic(self.vertices[1], self.vertices[2], self.vertices[0])
-            self.P = linear_interpolation(self.vertices[1], self.vertices[2], self.t)
-            self.Q = linear_interpolation(self.vertices[1], self.vertices[0], 1/2/self.t)
+        if(self.ft(self.vertices[1], self.vertices[2], self.vertices[0], self.p, 0.5)*self.ft(self.vertices[1], self.vertices[2], self.vertices[0], self.p, 1) <= 1e-6):
+            t_temp = self.solve_quadratic(self.vertices[1], self.vertices[2], self.vertices[0])
+            P_temp = linear_interpolation(self.vertices[1], self.vertices[2], t_temp)
+            Q_temp = linear_interpolation(self.vertices[1], self.vertices[0], 1/2/t_temp)
+            d_temp = (P_temp - self.p) / np.linalg.norm(P_temp - self.p)
+            print("2", P_temp, " ", self.p, " ", d_temp, "t", t_temp)
+            self.P = self.P + [P_temp]
+            self.Q = self.Q + [Q_temp]
+            self.d = self.d + [d_temp]
+            self.top = self.top + [self.vertices[1]]
             
-        if(self.ft(self.vertices[2], self.vertices[0], self.vertices[1], self.p, 0.5)*self.ft(self.vertices[2], self.vertices[0], self.vertices[1], self.p, 1) <= 0):
-            self.solve_quadratic(self.vertices[2], self.vertices[0], self.vertices[1])
-            self.P = linear_interpolation(self.vertices[2], self.vertices[0], self.t)
-            self.Q = linear_interpolation(self.vertices[2], self.vertices[1], 1/2/self.t)
+        if(self.ft(self.vertices[2], self.vertices[0], self.vertices[1], self.p, 0.5)*self.ft(self.vertices[2], self.vertices[0], self.vertices[1], self.p, 1) <= 1e-6):
+            t_temp = self.solve_quadratic(self.vertices[2], self.vertices[0], self.vertices[1])
+            P_temp = linear_interpolation(self.vertices[2], self.vertices[0], t_temp)
+            Q_temp = linear_interpolation(self.vertices[2], self.vertices[1], 1/2/t_temp)
+            d_temp = (P_temp - self.p) / np.linalg.norm(P_temp - self.p)
+            print("3", P_temp, " ", self.p, " ", d_temp, "t", t_temp)
+            self.P = self.P + [P_temp]
+            self.Q = self.Q + [Q_temp]
+            self.d = self.d + [d_temp]
+            self.top = self.top + [self.vertices[2]]
+            
+    def v_decision_boundary(self):
+        for i in range(len(self.P)):
+            v_line_2D(self.p, self.P[i])
+            v_line_2D(self.p, self.Q[i])
+            
+    def v_triangle(self):
+        v_triangle_2D(self.vertices[0], self.vertices[1], self.vertices[2])
+        
+    def v_vertices(self):
+        plt.plot(self.vertices[0][0], self.vertices[0][1], 'o', color='r')
+        plt.plot(self.vertices[1][0], self.vertices[1][1], 'o', color='r')
+        plt.plot(self.vertices[2][0], self.vertices[2][1], 'o', color='r')
+        
+    def v_result(self):
+        self.v_vertices()
+        plt.plot(self.p[0], self.p[1], 'o', color='r')
+        self.v_triangle()
+        v_triangle_barycentre(self.vertices[0], self.vertices[1], self.vertices[2])
+        self.get_t()
+        self.v_decision_boundary()
+        
+    def print_info(self):
+        print("The coordinates of point P: ", self.P)
+        print("The coordinates of point Q: ", self.Q)
+        print("The area of triangle: ", triangle_area_2D(self.vertices[0], self.vertices[1], self.vertices[2]))
+        print("The area of small half-area triangle: ", triangle_area_2D(self.P[0], self.Q[0], self.top[0]))
 
 class opt_gradient_descent:
     def __init__(self, num_iterations = 1000, lr=0.05):
@@ -168,10 +223,7 @@ def onclick(event):
             new_p = np.array([new_points_x[3], new_points_y[3]])
             vertices = np.array([np.array([new_points_x[0], new_points_y[0]]), np.array([new_points_x[1], new_points_y[1]]), np.array([new_points_x[2], new_points_y[2]])])
             problem = Triangle_Area_Bisection_2D(vertices, new_p)
-            problem.get_t()
-            v_line_2D(new_p, problem.Q)
-            v_line_2D(problem.P, problem.Q)
-            v_line_2D(problem.P, new_p)
+            problem.v_result()
     fig.canvas.draw()
 
 def on_keypress(event):
