@@ -35,8 +35,8 @@ def linear_interpolation(a, b, t):
 def distance_euclidean(p1, p2):
     return np.linalg.norm(p1 - p2)
 
-def triangle_area_2D(A, B, C):
-    return 0.5 * np.abs(np.cross(A-B, A-C))
+def triangle_area(A, B, C):
+    return np.linalg.norm(np.cross(B-A, C-A)) / 2
 
 def slope_2D(A, B):
     return (B[1]-A[1])/B[0]-A[0]
