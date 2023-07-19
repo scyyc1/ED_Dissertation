@@ -40,3 +40,33 @@ def triangle_area(A, B, C):
 
 def slope_2D(A, B):
     return (B[1]-A[1])/B[0]-A[0]
+
+
+class line_2D:
+    def __init__(self, p1, p2, coef=[]):
+        if len(coef)==3:
+            self.coef = coef
+        else:
+            self.coef = self.line_formula(p1, p2)
+        A, B, C = self.coef
+        self.slope = - A / B
+        self.C = C
+    
+    @staticmethod
+    def line_formula(p1, p2):
+        return np.array([p1[1]-p2[1], p2[0]-p1[0], p1[0]*p2[1] - p2[0]*p1[1]])
+    
+    def interpolate(self, p):
+        x, y = p
+        A, B, C = self.coef
+        return A*x + B*y + C
+    
+    def is_parallel(self, line_coef):
+        line_slope = - line_coef[0] / line_coef[1] 
+        return line_slope == self.slope
+    
+    def get_two_points(self):
+        A, B, C = self.coef
+        p1 = np.array([-C/A, 0])
+        p2 = np.array([0, -C/B])
+        return p1, p2
