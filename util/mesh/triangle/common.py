@@ -1,7 +1,7 @@
 import numpy as np
 from collections import Counter
 
-def get_boundary_edges(faces):
+def retrieve_boundary_edges(faces):
     edges = []
     for triangle in faces:
         for i in range(3):
@@ -14,7 +14,7 @@ def get_boundary_edges(faces):
     counts = Counter(edges)
     return [item for item, count in counts.items() if count == 1]
 
-def get_all_edges(faces):
+def retrieve_all_edges(faces):
     edges = set()
 
     for triangle in faces:
