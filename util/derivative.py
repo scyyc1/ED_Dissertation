@@ -26,3 +26,9 @@ def derivative_euclidean_distance(p1, p2):
     dd_dp2 = (p2 - p1) / d
     
     return dd_dp1, dd_dp2
+
+def derivative_inverse(M, dM_dt):
+    M_inv = np.linalg.inv(M)
+    dM_inv_dt = -np.dot(M_inv, np.dot(dM_dt, M_inv))
+    
+    return dM_inv_dt
