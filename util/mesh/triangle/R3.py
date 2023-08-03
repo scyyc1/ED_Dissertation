@@ -53,3 +53,17 @@ def calculate_all_dihedral_angles(faces, vertices):
         edge_to_angle[edge] = angle
 
     return edge_to_angle
+
+def calculate_face_normals(vertices, faces):
+    normals = np.zeros((len(faces), 3))
+
+    for i, face in enumerate(faces):
+        v1, v2, v3 = vertices[face[0]], vertices[face[1]], vertices[face[2]]
+
+        a = v2 - v1
+        b = v3 - v1
+
+        normal = np.cross(a, b)
+        normals[i] = normal / np.linalg.norm(normal)
+
+    return normals
