@@ -75,7 +75,7 @@ class Liu_2017:
         self.visualize_initial()
         self.visualize_solution()
         
-class chen_2023:
+class Chen_2023_ver1:
     def __init__(self, vertices, faces, lambda1=1, lambda2=1, max_iter = 30):
         self.max_iter = max_iter
         self.vertex_num = vertices.shape[0]
@@ -87,7 +87,7 @@ class chen_2023:
         self.solution = self.vertices.copy()
         self.boundary_edges = retrieve_boundary_edges(faces)
     
-    def activation(angle):
+    def activation(self, angle):
         if angle < (np.pi/2):
             return np.power(np.cos(angle), 2) / angle
         else:
@@ -108,10 +108,15 @@ class chen_2023:
             
         return self.lambda1*EB + self.lambda2*EA
     
-    def optimize(self):
+    def optimize_fault(self):
         x0 = np.ravel(self.solution)
         self.res = minimize(self.loss_classification, x0, options = {'maxiter': self.max_iter})
         self.solution = self.res.x.reshape((self.vertex_num, 2))
+    
+    def optimize(self, iter_num):
+        for i in range(iter_num):
+            self.optimize_one_round()
+            print("Round ", i, " done!")
     
     def optimize_one_round(self):
         x0 = np.ravel(self.solution)

@@ -1,0 +1,29 @@
+<Mesh_state>
+    <State>
+        <ConstIndices size="4" vector_int="
+0,10,880,890"/>
+        <ConstPoses size="4">
+            <value0 rows="3" cols="1" matrix="
+-2.4999992727272762,
+-19.999999999999861,
+0"/>
+            <value1 rows="3" cols="1" matrix="
+2.5000007272727238,
+-19.999999999999861,
+0"/>
+            <value2 rows="3" cols="1" matrix="
+-30.755352020263672,
+0.93198210000991821,
+0"/>
+            <value3 rows="3" cols="1" matrix="
+-21.228439331054688,
+-1.2426395416259766,
+0"/>
+        </ConstPoses>
+        <RigidRatio val="0"/>
+        <MCSensitivity val="0.01"/>
+        <IAPSensitivity val="1"/>
+        <QCSensitivity val="2"/>
+        <CircSensitivity val="5"/>
+    </State>
+</Mesh_state>

@@ -29,3 +29,26 @@ def retrieve_boundary_angles_2D(boundary_edges, vertices):
         cos_angle = np.dot(vectors[0], vectors[1])
         boundary_angles[vertex] = np.arccos(cos_angle)
     return boundary_angles
+
+def retrieve_boundary_vertices_related_edges_2D(boundary_vertices, boundary_edges):
+    vertex_to_edge = {v: [] for v in boundary_vertices}
+
+    for idx, (v1, v2) in enumerate(boundary_edges):
+        if v1 in vertex_to_edge:
+            vertex_to_edge[v1].append(idx)
+        if v2 in vertex_to_edge:
+            vertex_to_edge[v2].append(idx)
+
+    related_edge_indices = [vertex_to_edge[v] for v in boundary_vertices]
+
+    return np.array(related_edge_indices)
+
+def retrieve_boundary_edges_related_vertices_2D(boundary_vertices, boundary_edges):
+    BE_r_BV = []
+    
+    for v1, v2 in boundary_edges:
+        idx1 = np.where(boundary_vertices==v1)
+        idx2 = np.where(boundary_vertices==v2)
+        BE_r_BV.append(np.hstack((idx1[0], idx2[0])))
+    
+    return np.array(BE_r_BV)

@@ -1,0 +1,32 @@
+<Const_poses>
+    <State>
+        <ConstIndices size="6" vector_int="
+27,507,13,6,54,2"/>
+        <ConstPoses size="6">
+            <value0 rows="3" cols="1" matrix="
+-1.67798,
+-2.9487299999999999,
+0"/>
+            <value1 rows="3" cols="1" matrix="
+-1.9296500000000001,
+-0.83395699999999995,
+0"/>
+            <value2 rows="3" cols="1" matrix="
+-0.11662842333316803,
+2.7045037746429443,
+0"/>
+            <value3 rows="3" cols="1" matrix="
+2.3526191711425781,
+1.1490722894668579,
+0"/>
+            <value4 rows="3" cols="1" matrix="
+-0.51196718215942383,
+-4.5736207962036133,
+0"/>
+            <value5 rows="3" cols="1" matrix="
+2.7220339775085449,
+-1.3136948347091675,
+0"/>
+        </ConstPoses>
+    </State>
+</Const_poses>
