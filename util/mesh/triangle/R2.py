@@ -27,7 +27,7 @@ def retrieve_boundary_angles_2D(boundary_edges, vertices):
             unit_vector = vector / np.linalg.norm(vector)
             vectors.append(unit_vector)
         cos_angle = np.dot(vectors[0], vectors[1])
-        boundary_angles[vertex] = np.arccos(cos_angle)
+        boundary_angles[vertex] = np.arccos(np.clip(cos_angle, -1.0, 1.0))
     return boundary_angles
 
 def retrieve_boundary_vertices_related_edges_2D(boundary_vertices, boundary_edges):
@@ -52,3 +52,23 @@ def retrieve_boundary_edges_related_vertices_2D(boundary_vertices, boundary_edge
         BE_r_BV.append(np.hstack((idx1[0], idx2[0])))
     
     return np.array(BE_r_BV)
+
+def retrieve_adjacent_vertices_with_vertex(boundary_vertices, boundary_edges):
+    adjacent = {v: set() for v in boundary_vertices}
+
+    for edge in boundary_edges:
+        v1, v2 = edge
+        if v1 in adjacent:
+            adjacent[v1].add(v2)
+        if v2 in adjacent:
+            adjacent[v2].add(v1)
+
+    result = [list(adjacent[v]) for v in boundary_vertices]
+
+    return result
+
+def retrieve_adjacent_vertices_with_boundary_vertex(boundary_vertices, boundary_edges):
+    adjacent = retrieve_adjacent_vertices_with_vertex(boundary_vertices, boundary_edges)
+    result = [np.append(np.where(boundary_vertices==v1), np.where(boundary_vertices==v2)) for v1, v2 in adjacent]
+
+    return np.array(result)
