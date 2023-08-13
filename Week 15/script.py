@@ -10,8 +10,8 @@ from util.mesh.triangle.algorithm.R2.mapping_poly_square import Chen_2023_scipy
 
 from util.pyvista_util import preprocess, postprocess
 
-tritess_v, tritess_f = preprocess("./mesh/tritess/tritess_input.ply")
+tritess_v, tritess_f = preprocess("./mesh/cat/cat_input.ply")
 tritess_test = Chen_2023_scipy(tritess_v, tritess_f)
 tritess_test.optimize_default()
 tritess_test.mapping()
-postprocess("./mesh/tritess/tritess_output.ply", tritess_test.solution, tritess_f)
+postprocess("./mesh/cat/cat_output2.ply", tritess_test.solution, tritess_f)
