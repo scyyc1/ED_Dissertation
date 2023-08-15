@@ -7,7 +7,7 @@ from util.mesh.triangle.common import retrieve_boundary_edges, retrieve_boundary
 from util.util import distance_euclidean
 
 class poly_square_tutte:
-    def __init__(self, vertices, faces, lambda_=1, max_iter = 100):
+    def __init__(self, vertices, faces, lambda1=1, lambda2=1, max_iter = 100):
         self.max_iter = max_iter
         self.v_num = vertices.shape[0]
         self.vertices = vertices
@@ -18,7 +18,8 @@ class poly_square_tutte:
         self.loss_history = []
         
         # Hyper parameters
-        self.lambda_=lambda_
+        self.lambda1=lambda1
+        self.lambda2=lambda2
         
         # Boundary realated "BE = boundary edges" and "BV = boundary vertices"
         self.BE_r_V = retrieve_boundary_edges(faces)
@@ -53,7 +54,7 @@ class poly_square_tutte:
             
             E_align += L1*(np.sum(np.absolute(edge1/L1)) - 1) + L2*(np.sum(np.absolute(edge2/L2)) - 1)
 
-        return E_align + self.lambda_*E_angle
+        return self.lambda2*E_align + self.lambda1*E_angle
     
     def mapping(self):
         self.solution = Tutte_embedding_2D(self.vertices, self.faces, self.solution[self.BV_r_V])
