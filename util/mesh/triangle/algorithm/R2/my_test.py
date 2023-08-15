@@ -7,7 +7,7 @@ from util.mesh.triangle.common import retrieve_boundary_edges, retrieve_boundary
 from util.util import distance_euclidean
 
 class poly_square_tutte:
-    def __init__(self, vertices, faces, lambda1=1, lambda2=1, max_iter = 100):
+    def __init__(self, vertices, faces, lambda_=1, max_iter = 100):
         self.max_iter = max_iter
         self.v_num = vertices.shape[0]
         self.vertices = vertices
@@ -15,10 +15,10 @@ class poly_square_tutte:
         self.faces = faces
         self.J = []
         self.b = []
+        self.loss_history = []
         
         # Hyper parameters
-        self.lambda1=lambda1
-        self.lambda2=lambda2
+        self.lambda_=lambda_
         
         # Boundary realated "BE = boundary edges" and "BV = boundary vertices"
         self.BE_r_V = retrieve_boundary_edges(faces)
@@ -53,7 +53,7 @@ class poly_square_tutte:
             
             E_align += L1*(np.sum(np.absolute(edge1/L1)) - 1) + L2*(np.sum(np.absolute(edge2/L2)) - 1)
 
-        return E_angle + self.lambda1*E_align
+        return E_align + self.lambda_*E_angle
     
     def mapping(self):
         self.solution = Tutte_embedding_2D(self.vertices, self.faces, self.solution[self.BV_r_V])
@@ -72,7 +72,7 @@ class poly_square_tutte:
     
     def optimize_default(self):
         x0 = np.ravel(self.solution[self.BV_r_V])
-        self.res = minimize(self.objective, x0, options = {'maxiter': self.max_iter}, method = "BFGS")
+        self.res = minimize(self.objective, x0, options = {'maxiter': self.max_iter}, method = "BFGS", callback=self.callback)
         self.solution[self.BV_r_V] = self.res.x.reshape((len(self.BV_r_V) , 2))
     
     def optimize(self, iter_num):
@@ -82,8 +82,11 @@ class poly_square_tutte:
     
     def optimize_one_round(self):
         x0 = np.ravel(self.solution[self.BV_r_V])
-        self.res = minimize(self.objective, x0, options = {'maxiter': 1}, method = "BFGS")
+        self.res = minimize(self.objective, x0, options = {'maxiter': 1}, method = "BFGS", callback=self.callback)
         self.solution[self.BV_r_V] = self.res.x.reshape((len(self.BV_r_V) , 2))
+        
+    def callback(self, x0):
+        self.loss_history.append(self.objective(x0))
         
     def v_plt(self, show_origin=False, show_BV=False, show_vertices=False, show_inner_edges=False, save_dict='', show_boundary_v=False):
 #         plt.triplot(self.vertices[:,0], self.vertices[:,1], self.faces, label='Original Mesh', color='blue')
@@ -109,7 +112,18 @@ class poly_square_tutte:
         plt.legend()
         if save_dict:
             plt.savefig(save_dict, dpi=300)
-        plt.show() 
+        plt.show()
+        
+    def v_loss(self, save_dict=''):
+        iterations = list(range(1, len(self.loss_history) + 1))
+        plt.plot(iterations, self.loss_history, '-o', label='Loss Value', markersize=3)
+        plt.title('Loss vs. Iterations')
+        plt.xlabel('Iterations')
+        plt.ylabel('Loss')
+        if save_dict:
+            plt.savefig(save_dict, dpi=300)
+        plt.legend()
+        plt.show()
         
 class boundary_smoothing_tutte:
     def __init__(self, vertices, faces, lambda1=1, lambda2=1, max_iter = 100):
@@ -136,7 +150,7 @@ class boundary_smoothing_tutte:
         if angle < (np.pi/2):
             return np.power(np.cos(angle), 2) / angle
         else:
-            return np.power(np.cos(angle), 2)
+            return np.power(np.sin(2*angle), 2)
         
     def objective(self, BV):
         BV = BV.reshape((self.BV_num,2))

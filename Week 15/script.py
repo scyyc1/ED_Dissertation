@@ -12,7 +12,7 @@ from util.pyvista_util import preprocess, postprocess
 tritess_v, tritess_f = preprocess("./mesh/cat/cat_input.ply")
 
 # Poly square mapping
-tritess_test1 = poly_square_tutte(tritess_v.copy, tritess_f.copy())
+tritess_test1 = poly_square_tutte(tritess_v.copy(), tritess_f.copy())
 
 # Boundary Deformation
 start_time = time.time()
@@ -31,7 +31,7 @@ t_tutte1 = end_time - start_time
 postprocess("./mesh/cat/cat_out_PolySquare.ply", tritess_test1.solution, tritess_f)
 
 # Boundary smoothing
-tritess_test2 = poly_square_tutte(tritess_v.copy, tritess_f.copy())
+tritess_test2 = boundary_smoothing_tutte(tritess_v.copy(), tritess_f.copy())
 
 # Boundary Deformation
 start_time = time.time()
@@ -47,4 +47,4 @@ end_time = time.time()
 
 t_tutte2 = end_time - start_time
 
-postprocess("./mesh/cat/cat_out_PolySquare.ply", tritess_test2.solution, tritess_f)
+postprocess("./mesh/cat/cat_out_Smoothing.ply", tritess_test2.solution, tritess_f)

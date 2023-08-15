@@ -13,6 +13,7 @@ class Liu_2017:
         self.vertices = vertices
         self.faces = faces
         self.lambda_=lambda_
+        self.loss_history = []
         
         self.solution = self.vertices.copy()
         self.boundary_edges = retrieve_boundary_edges(faces)
@@ -40,17 +41,22 @@ class Liu_2017:
             s1, s2 = s[0], s[1]
             ED += np.exp(s1/s2 + s2/s1)
             
+        print(self.lambda_, EB, ED)
+            
         return self.lambda_*EB+ED
     
     def optimize(self):
         x0 = np.ravel(self.solution)
-        self.res = minimize(self.loss, x0, options = {'maxiter': self.max_iter})
+        self.res = minimize(self.loss, x0, options = {'maxiter': self.max_iter}, callback=self.callback)
         self.solution = self.res.x.reshape((self.vertex_num, 2))
     
     def optimize_one_round(self):
         x0 = np.ravel(self.solution)
-        self.res = minimize(self.loss, x0, options = {'maxiter': 1})
+        self.res = minimize(self.loss, x0, options = {'maxiter': 1}, callback=self.callback)
         self.solution = self.res.x.reshape((self.vertex_num, 2))
+        
+    def callback(self, x0):
+        self.loss_history.append(self.objective(x0))
         
     def visualize_initial(self, show_boundary = False):
         plt.plot(self.vertices[:,0], self.vertices[:,1], 'o', color='green')
@@ -75,6 +81,17 @@ class Liu_2017:
     def visualize(self):
         self.visualize_initial()
         self.visualize_solution()
+        
+    def v_loss(self, save_dict=''):
+        iterations = list(range(1, len(self.loss_history) + 1))
+        plt.plot(iterations, self.loss_history, '-o', label='Loss Value', markersize=3)
+        plt.title('Loss vs. Iterations')
+        plt.xlabel('Iterations')
+        plt.ylabel('Loss')
+        if save_dict:
+            plt.savefig(save_dict, dpi=300)
+        plt.legend()
+        plt.show()
         
 class Chen_2023_ver1:
     def __init__(self, vertices, faces, lambda1=1, lambda2=1, max_iter = 30):
