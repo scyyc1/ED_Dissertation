@@ -1,0 +1,15 @@
+Input name,Output name,Size of vertex,Size of face,Size of boundary vertex / edge,Lambda,Method,Max iteration,Nit,Njev,nfev,Loss of last round,Time for boundary classification,Time for Tutte embedding,Time overall,Number of flipped triangle,Is overlap,Converge?,Distortion
+cat_input.ply,cat_output1.ply,1304,2121,485,10,BFGS,100,63,175,169934,16,1563,0.326,1563.326,,YES,Yes,263.725
+cat_input.ply,cat_output2.ply,1304,2121,485,10,BFGS,100,60,147,157670,14.109,2073,0.285,2073.285,,No,Yes,336.828
+horse_input.ply,horse_output1.ply,1574,2670,476,10,BFGS,300,114,223,256981,13.562,2639,0.468,2639.468,,No,Yes,517.926
+horse_input.ply,horse_output2.ply,1574,2670,476,10,BFGS,100,89,219,208718,0.168,3993,0.279,3993.279,,No,Yes,665.318
+ring.ply,ring_output.ply,871,1600,180,10,BFGS,300,255,153,55233,15.639,611,0.135,611.135,,No,Yes,80.917
+zhong.ply,zhong_output.ply,762,1316,210,1,BFGS,100,100,105,44310,12.242,758.734,0.14,758.874,,No,Yes,60.372
+s_char_input,s_char_output.ply,322,450,192,1,BFGS,100,68,210,81068,1.498,494.824,0.062,494.886,,No,No,156.953
+bunny_input.ply,bunny_output_10.ply,729,1317,139,10,BFGS,100,58,133,37247,15.167,178.719,0.222,178.941,12,No,No,32.917
+bunny_input.ply,bunny_output_5.ply,729,1317,139,5,BFGS,100,64,201,56089,1.411,530.167,0.285,530.452,43,No,Yes,84.936
+bunny_input.ply,bunny_output_3.ply,729,1317,139,3,BFGS,100,97,272,75900,1.106,701.156,0.204,701.36,55,Yes,Yes,96.887
+bunny_input.ply,bunny_output_1.ply,729,1317,139,1,BFGS,100,84,309,86223,1.423,814.102,0.19,814.292,39,Yes,Yes,79.208
+bunny_input.ply,bunny_output_01.ply,729,1317,139,0.1,BFGS,100,100,229,63891,1.451,628.174,0.215,628.389,46,No,Yes,60.648
+bunny_input.ply,bunny_output_down.ply,729,1317,139,descenting,BFGS,100,100,,,0.0936,1536.728,0.264,1536.992,23,No,Yes,102.546
+bunny_input.ply,bunny_output_up.ply,729,1317,139,ascending,BFGS,100,100,,,0.45,1983.566,0.216,1983.782,32,No,Yes,97.453
